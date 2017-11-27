@@ -4,6 +4,7 @@ import es.pharmashop.batch.ArticleProcessor;
 import es.pharmashop.batch.StringHeaderWriter;
 import es.pharmashop.domain.Article;
 import es.pharmashop.persistence.ArticleMapper;
+import lombok.extern.java.Log;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -24,7 +25,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
 
+@Log
 @Configuration
 public class Sql2CsvJobConfiguration {
     private final static String FIND_ARTICLES_QUERY = "SELECT a.IdArticu, a.Descripcion, a.Pvp, a.StockActual, a.StockMinimo, a.StockMaximo, a.LoteOptimo, a.FechaUltimaEntrada, a.FechaUltimaSalida, a.FechaCaducidad\n" +
@@ -53,20 +57,37 @@ public class Sql2CsvJobConfiguration {
     }
 
     @Bean
-    public ItemWriter<Article> articleItemWriter() {
+    public ItemWriter<Article> articleItemWriter(
+            @Value("${farmatic2csv.out.file:#{null}}") String outputFileName
+    ) {
         FlatFileItemWriter<Article> itemWriter = new FlatFileItemWriter<>();
 
         String exportFileHeader = "ID;DESCRIPTION;PRICE;STOCK";
         StringHeaderWriter headerWriter = new StringHeaderWriter(exportFileHeader);
         itemWriter.setHeaderCallback(headerWriter);
 
-        String exportFilePath = "/tmp/articles.csv";
+        String exportFilePath = outputFileName == null ? getOutputFileName() : outputFileName;
+        log.info("output file is: " + exportFilePath);
+
         itemWriter.setResource(new FileSystemResource(exportFilePath));
 
         LineAggregator<Article> lineAggregator = createArticleLineAggregator();
         itemWriter.setLineAggregator(lineAggregator);
 
         return itemWriter;
+    }
+
+    private String getOutputFileName() {
+        String outFile = null;
+
+        try {
+            File tempFile = File.createTempFile("farmatic2promofarma", ".csv");
+            outFile = tempFile.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return outFile;
     }
 
     private LineAggregator<Article> createArticleLineAggregator() {
