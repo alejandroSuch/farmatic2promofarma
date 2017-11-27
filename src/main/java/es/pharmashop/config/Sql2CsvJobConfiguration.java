@@ -101,15 +101,13 @@ public class Sql2CsvJobConfiguration {
     }
 
     @Bean
-    public Job farmatic2csv(JobBuilderFactory jobBuilderFactory,
-                            Step popEvents,
-                            Step ackEvents,
-                            Step saveVehiclePositions) {
+    public Job farmatic2csv(
+            JobBuilderFactory jobBuilderFactory,
+            Step importArticles
+    ) {
         return jobBuilderFactory.get("farmatic2csv")
                 .incrementer(new RunIdIncrementer())
-                .start(popEvents)
-                .next(saveVehiclePositions)
-                .next(ackEvents)
+                .start(importArticles)
                 .build();
     }
 }
