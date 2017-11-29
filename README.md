@@ -2,7 +2,7 @@
 
 ## Variables
 
-`farmatic.stock.factor`: factor to apply to stoc. Values should be between 0 and 1 (i.e.: 0.7). Default value: 0. Decimal values will apply a `ceil`.
+`farmatic.stock.factor`: factor to apply to stock. Values should be between 0 and 1 (i.e.: 0.7). Default value: 0. Decimal values will apply a `ceil`.
 
 `farmatic2csv.use.price`: add price column to CSV. Default value: false
 
