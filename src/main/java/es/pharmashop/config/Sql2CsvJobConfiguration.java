@@ -50,7 +50,9 @@ public class Sql2CsvJobConfiguration {
     }
 
     @Bean
-    public ItemProcessor articleItemProcessor(@Value("${farmatic.stock.factor:1}") Float factor) {
+    public ItemProcessor articleItemProcessor(
+            @Value("${farmatic.stock.factor:1}") Float factor
+    ) {
         return ArticleProcessor.builder()
                 .factor(factor)
                 .build();
@@ -58,11 +60,12 @@ public class Sql2CsvJobConfiguration {
 
     @Bean
     public ItemWriter<Article> articleItemWriter(
-            @Value("${farmatic2csv.out.file:#{null}}") String outputFileName
+            @Value("${farmatic2csv.out.file:#{null}}") String outputFileName,
+            @Value("${farmatic2csv.use.price:#{false}}") Boolean usePrice
     ) {
         FlatFileItemWriter<Article> itemWriter = new FlatFileItemWriter<>();
 
-        String exportFileHeader = "ID;DESCRIPTION;PRICE;STOCK";
+        String exportFileHeader = usePrice ? "CN;DESCRIPTION;PRICE;STOCK" : "CN;DESCRIPTION;STOCK";
         StringHeaderWriter headerWriter = new StringHeaderWriter(exportFileHeader);
         itemWriter.setHeaderCallback(headerWriter);
 
@@ -71,7 +74,7 @@ public class Sql2CsvJobConfiguration {
 
         itemWriter.setResource(new FileSystemResource(exportFilePath));
 
-        LineAggregator<Article> lineAggregator = createArticleLineAggregator();
+        LineAggregator<Article> lineAggregator = createArticleLineAggregator(usePrice);
         itemWriter.setLineAggregator(lineAggregator);
 
         return itemWriter;
@@ -90,19 +93,23 @@ public class Sql2CsvJobConfiguration {
         return outFile;
     }
 
-    private LineAggregator<Article> createArticleLineAggregator() {
+    private LineAggregator<Article> createArticleLineAggregator(Boolean usePrice) {
         DelimitedLineAggregator<Article> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter(";");
 
-        FieldExtractor<Article> fieldExtractor = createArticleFieldExtractor();
+        FieldExtractor<Article> fieldExtractor = createArticleFieldExtractor(usePrice);
         lineAggregator.setFieldExtractor(fieldExtractor);
 
         return lineAggregator;
     }
 
-    private FieldExtractor<Article> createArticleFieldExtractor() {
+    private FieldExtractor<Article> createArticleFieldExtractor(Boolean usePrice) {
         BeanWrapperFieldExtractor<Article> extractor = new BeanWrapperFieldExtractor<>();
-        extractor.setNames(new String[]{"id", "description", "price", "stock"});
+        extractor.setNames(
+                usePrice ?
+                        new String[]{"id", "description", "price", "stock"} :
+                        new String[]{"id", "description", "stock"}
+        );
         return extractor;
     }
 
