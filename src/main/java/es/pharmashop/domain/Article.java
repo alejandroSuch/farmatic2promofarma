@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-import sun.rmi.server.InactiveGroupException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Data
 @Builder
@@ -21,6 +21,15 @@ public class Article {
     public void applyFactorToStock(Float factor) {
         double newStock = Math.ceil(this.stock * factor);
         this.stock = new Double(newStock).intValue();
+    }
+
+    public void applyMarginToPrice(Float margin) {
+        if (margin == null) {
+            throw new NullPointerException("margin cannot be null");
+        }
+
+        BigDecimal multiplicand = new BigDecimal(1f + margin).setScale(2, RoundingMode.UP);
+        price = price.multiply(multiplicand).setScale(2, RoundingMode.UP);
     }
 
     public void fixStock() {

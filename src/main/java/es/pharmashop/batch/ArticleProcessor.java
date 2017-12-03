@@ -11,11 +11,13 @@ import org.springframework.batch.item.ItemProcessor;
 @AllArgsConstructor
 public class ArticleProcessor implements ItemProcessor<Article, Article> {
     private Float factor;
+    private Float margin;
 
     @Override
     public Article process(Article article) throws Exception {
         article.fixStock();
         article.applyFactorToStock(factor);
+        article.applyMarginToPrice(margin);
         return article;
     }
 }

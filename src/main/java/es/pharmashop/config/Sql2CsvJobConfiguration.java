@@ -31,7 +31,7 @@ import java.io.IOException;
 @Log
 @Configuration
 public class Sql2CsvJobConfiguration {
-    private final static String FIND_ARTICLES_QUERY = "SELECT a.IdArticu, a.Descripcion, a.Pvp, a.StockActual, a.StockMinimo, a.StockMaximo, a.LoteOptimo, a.FechaUltimaEntrada, a.FechaUltimaSalida, a.FechaCaducidad\n" +
+    private final static String FIND_ARTICLES_QUERY = "SELECT a.IdArticu, a.Descripcion, a.Pvp, a.Puc, a.StockActual, a.StockMinimo, a.StockMaximo, a.LoteOptimo, a.FechaUltimaEntrada, a.FechaUltimaSalida, a.FechaCaducidad\n" +
             "FROM Articu a\n" +
             "LEFT JOIN ItemListaArticu i on a.IdArticu = i.XItem_IdArticu\n" +
             "LEFT JOIN ListaArticu l on i.XItem_IdLista = l.IdLista\n" +
@@ -51,10 +51,13 @@ public class Sql2CsvJobConfiguration {
 
     @Bean
     public ItemProcessor articleItemProcessor(
-            @Value("${farmatic.stock.factor:1}") Float factor
+            @Value("${farmatic2csv.stock.factor:1}") Float factor,
+            @Value("${farmatic2csv.price.margin:0}") Float margin
+
     ) {
         return ArticleProcessor.builder()
                 .factor(factor)
+                .margin(margin)
                 .build();
     }
 
@@ -65,12 +68,12 @@ public class Sql2CsvJobConfiguration {
     ) {
         FlatFileItemWriter<Article> itemWriter = new FlatFileItemWriter<>();
 
-        String exportFileHeader = usePrice ? "CN;DESCRIPTION;PRICE;STOCK" : "CN;DESCRIPTION;STOCK";
+        String exportFileHeader = usePrice ? "unique_id;title;prix;availability" : "unique_id;title;availability";
         StringHeaderWriter headerWriter = new StringHeaderWriter(exportFileHeader);
         itemWriter.setHeaderCallback(headerWriter);
 
         String exportFilePath = outputFileName == null ? getOutputFileName() : outputFileName;
-        log.info("output file is: " + exportFilePath);
+        log.info("Output file is: " + exportFilePath);
 
         itemWriter.setResource(new FileSystemResource(exportFilePath));
 
