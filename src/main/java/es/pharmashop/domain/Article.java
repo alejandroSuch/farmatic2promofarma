@@ -14,8 +14,10 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 public class Article {
     String id;
+    String ean;
     String description;
     BigDecimal price;
+    BigDecimal taxes;
     Integer stock;
 
     public void applyFactorToStock(Float factor) {

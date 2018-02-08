@@ -31,12 +31,19 @@ import java.io.IOException;
 @Log
 @Configuration
 public class Sql2CsvJobConfiguration {
-    private final static String FIND_ARTICLES_QUERY = "SELECT a.IdArticu, a.Descripcion, a.Pvp, a.Puc, a.StockActual, a.StockMinimo, a.StockMaximo, a.LoteOptimo, a.FechaUltimaEntrada, a.FechaUltimaSalida, a.FechaCaducidad\n" +
+    private static final String TMP_FILE_PREFIX = "farmatic2promofarma";
+    private static final String TMP_FILE_SUFFIX = ".csv";
+
+    private final static String FIND_ARTICLES_QUERY =
+            "SELECT a.IdArticu, s.Sinonimo, a.Descripcion, a.Pvp, a.Puc, ti.Piva, a.StockActual, a.StockMinimo, a.StockMaximo, a.LoteOptimo, a.FechaUltimaEntrada, a.FechaUltimaSalida, a.FechaCaducidad\n" +
             "FROM Articu a\n" +
-            "LEFT JOIN ItemListaArticu i on a.IdArticu = i.XItem_IdArticu\n" +
-            "LEFT JOIN ListaArticu l on i.XItem_IdLista = l.IdLista\n" +
-            "LEFT JOIN GrupoIva g ON a.XGrup_IdGrupoIva = g.IdGrupoIva\n" +
-            "WHERE l.Descripcion = 'PROMOFARMA'";
+            "  LEFT JOIN ItemListaArticu i on a.IdArticu = i.XItem_IdArticu\n" +
+            "  LEFT JOIN ListaArticu l on i.XItem_IdLista = l.IdLista\n" +
+            "  LEFT JOIN Sinonimo s ON s.IdArticu = a.IdArticu \n" +
+            "  LEFT JOIN TablaIva ti ON ti.IdTipoArt = a.XGrup_IdGrupoIva AND ti.IdTipoPro = '05'\n" +
+            "WHERE l.Descripcion = 'PROMOFARMA'\n" +
+            "  AND s.IdAplicacion = '00000' \n" +
+            "  AND LEN(TRIM(s.Sinonimo)) = 13";
 
     @Bean
     ItemReader<Article> databaseItemReader(DataSource dataSource) {
@@ -52,7 +59,7 @@ public class Sql2CsvJobConfiguration {
     @Bean
     public ItemProcessor articleItemProcessor(
             @Value("${farmatic2csv.stock.factor:1}") Float factor,
-            @Value("${farmatic2csv.price.margin:0}") Float margin
+            @Value("${farmatic2csv.price.margin}") Float margin
 
     ) {
         return ArticleProcessor.builder()
@@ -68,7 +75,7 @@ public class Sql2CsvJobConfiguration {
     ) {
         FlatFileItemWriter<Article> itemWriter = new FlatFileItemWriter<>();
 
-        String exportFileHeader = usePrice ? "unique_id;title;prix;availability" : "unique_id;title;availability";
+        String exportFileHeader = usePrice ? "national_code;ean;title;price;taxes;stock" : "national_code;ean;title;stock";
         StringHeaderWriter headerWriter = new StringHeaderWriter(exportFileHeader);
         itemWriter.setHeaderCallback(headerWriter);
 
@@ -87,7 +94,7 @@ public class Sql2CsvJobConfiguration {
         String outFile = null;
 
         try {
-            File tempFile = File.createTempFile("farmatic2promofarma", ".csv");
+            File tempFile = File.createTempFile(TMP_FILE_PREFIX, TMP_FILE_SUFFIX);
             outFile = tempFile.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,8 +117,8 @@ public class Sql2CsvJobConfiguration {
         BeanWrapperFieldExtractor<Article> extractor = new BeanWrapperFieldExtractor<>();
         extractor.setNames(
                 usePrice ?
-                        new String[]{"id", "description", "price", "stock"} :
-                        new String[]{"id", "description", "stock"}
+                        new String[]{"id", "ean", "description", "price", "taxes", "stock"} :
+                        new String[]{"id", "ean", "description", "stock"}
         );
         return extractor;
     }
