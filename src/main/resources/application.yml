@@ -11,6 +11,8 @@ spring:
       enabled: false # disable database initialization
     job:
       enabled: false # do not create a runner
+  profiles:
+    active: development
 
 logging:
   file: logs/farmatic2promofarma.log
