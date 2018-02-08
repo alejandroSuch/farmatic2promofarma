@@ -3,3 +3,7 @@ spring:
     url: jdbc:sqlserver://localhost:1433;databaseName=FARMACIA
     username: sa
     password: AdministradoR001
+
+farmatic2csv:
+  use:
+    price: true
