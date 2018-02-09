@@ -43,7 +43,7 @@ public class Sql2CsvJobConfiguration {
             "  LEFT JOIN TablaIva ti ON ti.IdTipoArt = a.XGrup_IdGrupoIva AND ti.IdTipoPro = '05'\n" +
             "WHERE l.Descripcion = 'PROMOFARMA'\n" +
             "  AND s.IdAplicacion = '00000' \n" +
-            "  AND LEN(TRIM(s.Sinonimo)) = 13";
+            "  AND LEN(s.Sinonimo) = 13";
 
     @Bean
     ItemReader<Article> databaseItemReader(DataSource dataSource) {
