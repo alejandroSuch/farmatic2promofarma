@@ -17,7 +17,7 @@ public class Article {
     String ean;
     String description;
     BigDecimal price;
-    BigDecimal taxes;
+    Integer taxes;
     Integer stock;
 
     public void applyFactorToStock(Float factor) {

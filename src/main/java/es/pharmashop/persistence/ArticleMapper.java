@@ -22,7 +22,7 @@ public class ArticleMapper implements RowMapper<Article> {
                 .ean(resultSet.getString(EAN_COLUMN))
                 .description(resultSet.getString(DESCRIPTION_COLUMN))
                 .price(resultSet.getBigDecimal(PUC_COLUMN))
-                .taxes(resultSet.getBigDecimal(TAXES_COLUMN))
+                .taxes(resultSet.getInt(TAXES_COLUMN))
                 .stock(resultSet.getInt(STOCK_COLUMN))
                 .build();
 
