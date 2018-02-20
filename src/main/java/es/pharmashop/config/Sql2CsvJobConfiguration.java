@@ -75,7 +75,7 @@ public class Sql2CsvJobConfiguration {
     ) {
         FlatFileItemWriter<Article> itemWriter = new FlatFileItemWriter<>();
 
-        String exportFileHeader = usePrice ? "national_code;ean;title;price;taxes;stock" : "national_code;ean;title;stock";
+        String exportFileHeader = usePrice ? "national_code;ean;title;price;iva;stock" : "national_code;ean;title;stock";
         StringHeaderWriter headerWriter = new StringHeaderWriter(exportFileHeader);
         itemWriter.setHeaderCallback(headerWriter);
 
