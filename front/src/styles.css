@@ -1,3 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 
-body { margin: 0; }
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.datatable-body-row.invalid {
+  background: #FFCCBC !important;
+}
+
+.datatable-body-row.valid {
+  background: #B2DFDB !important;;
+}
+
+.datatable-body-row.pending {
+  background: #FFECB3 !important;;
+}

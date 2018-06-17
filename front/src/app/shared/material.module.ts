@@ -1,8 +1,12 @@
 import {NgModule} from "@angular/core";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 
 const materialModules = [
-  MatToolbarModule
+  MatToolbarModule,
+  MatCheckboxModule,
+  NgxDatatableModule
 ];
 
 @NgModule({

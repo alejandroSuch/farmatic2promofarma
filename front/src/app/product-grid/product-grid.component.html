@@ -1,0 +1,112 @@
+<ngx-datatable
+  class="material fullscreen"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [footerHeight]="0"
+  [rowHeight]="50"
+  [scrollbarV]="true"
+  [scrollbarH]="true"
+  [rows]="products"
+  [rowClass]="getRowClass">
+  <ngx-datatable-column name="Producto" prop="name" [resizeable]="false"></ngx-datatable-column>
+  <ngx-datatable-column name="Código Promofarma" prop="uniqueCode" [width]="110" [minWidth]="110" [resizeable]="false">
+    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-uniqueCode="value" let-product="row">
+      <div
+        class="unique-code"
+        title="Haz doble click para editar"
+        (dblclick)="editing = rowIndex"
+        *ngIf="editing !== rowIndex">
+          {{ uniqueCode }}.
+      </div>
+      <input
+        class="unique-code"
+        type="text"
+        autofocus="true"
+        (blur)="updateUniqueCodeFor(product, $event.target.value)"
+        *ngIf="editing === rowIndex"
+        [value]="product.uniqueCode"
+      />
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Código nacional" prop="cn" [width]="90" [minWidth]="90" [resizeable]="false"></ngx-datatable-column>
+  <ngx-datatable-column name="EAN" prop="ean" [width]="105" [minWidth]="105" [resizeable]="false"></ngx-datatable-column>
+  <ngx-datatable-column name="Revisado" prop="revision" [width]="60" [minWidth]="60" [resizeable]="false">
+    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-revision="value" let-product="row">
+      <mat-checkbox
+        [checked]="product.revision"
+        [disabled]="product.isNotValid()"
+        (change)="check($event, product)"
+      ></mat-checkbox>
+    </ng-template>
+
+  </ngx-datatable-column>
+</ngx-datatable>
+
+<!-- <p-table [value]="products">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Producto</th>
+      <th>Código Promofarma</th>
+      <th>Código Nacional</th>
+      <th>EAN</th>
+      <th>Revisado</th>
+    </tr>
+    <tr>
+      <th>
+        <input type="text"
+               (debounced)="productFilterChanged($event)"
+               [delay]="1000">
+      </th>
+      <th>
+        <input type="text" (debounced)="uniqueCodeFilterChanged($event)" [delay]="500">
+      </th>
+      <th>
+        <input type="text" (debounced)="cnFilterChanged($event)" [delay]="500">
+      </th>
+      <th>
+        <input type="text" (debounced)="eanFilterChanged($event)" [delay]="500">
+      </th>
+      <th>
+        <select (change)="revisionFilterChanged($event.target.value)">
+          <option selected [value]="2">Todos</option>
+          <option [value]="0">No</option>
+          <option [value]="1">Sí</option>
+        </select>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-product>
+    <tr>
+      <td>
+        <p [title]="product.name" class="product-name">{{ product.name }}</p>
+      </td>
+      <td pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input type="text" [(ngModel)]="product.uniqueCode" required>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ product.uniqueCode }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        {{ product.cn }}
+      </td>
+      <td>
+        {{ product.ean }}
+      </td>
+      <td>
+        <mat-checkbox
+          [checked]="product.revision"
+          [disabled]="product.isNotValid()"
+        ></mat-checkbox>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<!-- <p-paginator
+  [rows]="size"
+  [totalRecords]="totalElements"
+  [rowsPerPageOptions]="[10,25,50]"
+  (onPageChange)="paginate($event)"></p-paginator> -->

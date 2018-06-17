@@ -1,0 +1,28 @@
+:host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+* {
+  font-family: "Roboto", "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+ngx-datatable {
+  flex: 1;
+}
+
+div.unique-code {
+  width: 100%;
+  min-height: 22px;
+}
+
+input.unique-code {
+  outline: none;
+}
+
+p.product-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
