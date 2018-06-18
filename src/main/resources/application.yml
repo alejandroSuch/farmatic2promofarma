@@ -2,10 +2,11 @@ spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       dialect: org.hibernate.dialect.SQLServer2012Dialect
       ddl-auto: none
+    database: default
   batch:
     initializer:
       enabled: false # disable database initialization

@@ -1,5 +1,6 @@
 package es.pharmashop.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -30,23 +31,23 @@ public class SqliteConfiguration {
   private static final String ENTITY_PACKAGES = "es.pharmashop.persistence.sqlite";
   private static final String HIBERNATE_FORMAT = "hibernate.%s";
 
-  @Bean
+  @Bean(name = "sqliteDataSource")
   @ConfigurationProperties(prefix = "sqlite.datasource")
   public DataSource sqliteDataSource() {
     return DataSourceBuilder.create().build();
   }
 
-  @Bean
+  @Bean(name = "sqliteHibernateProperties")
   @ConfigurationProperties(prefix = "sqlite.jpa.hibernate")
   public Map<String, String> sqliteHibernateProperties() {
     return new HashMap<>();
   }
 
-  @Bean
+  @Bean(name = "sqliteEntityManagerFactory")
   public LocalContainerEntityManagerFactoryBean sqliteEntityManagerFactory(
     EntityManagerFactoryBuilder builder,
-    DataSource sqliteDataSource,
-    Map<String, String> sqliteHibernateProperties
+    @Qualifier("sqliteDataSource") DataSource sqliteDataSource,
+    @Qualifier("sqliteHibernateProperties") Map<String, String> sqliteHibernateProperties
   ) {
 
     return
@@ -66,8 +67,8 @@ public class SqliteConfiguration {
         .build();
   }
 
-  @Bean
-  public PlatformTransactionManager sqliteTransactionManager(EntityManagerFactory sqliteEntityManagerFactory) {
+  @Bean(name = "sqliteTransactionManager")
+  public PlatformTransactionManager sqliteTransactionManager(@Qualifier("sqliteEntityManagerFactory") EntityManagerFactory sqliteEntityManagerFactory) {
     return new JpaTransactionManager(sqliteEntityManagerFactory);
   }
 }

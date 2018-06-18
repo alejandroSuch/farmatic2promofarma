@@ -3,7 +3,8 @@ import {ProductRepository} from "./domain/impl/ProductRepository";
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {IProduct, Product} from "./domain/Product";
 import {concatMap, take, toArray} from "rxjs/operators";
-import {switchMap} from "rxjs/internal/operators";
+import {catchError, switchMap} from "rxjs/internal/operators";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'fa-root',
@@ -14,7 +15,7 @@ export class AppComponent implements OnInit {
   findAll$: BehaviorSubject<Product[]> = new BehaviorSubject([]);
   product$: Observable<Product[]>;
 
-  constructor(private productRepository: ProductRepository) {
+  constructor(private productRepository: ProductRepository, private snackBar: MatSnackBar) {
 
   }
 
@@ -39,12 +40,24 @@ export class AppComponent implements OnInit {
           return of(product);
         }
 
+        const oldUniqueCode = product.uniqueCode;
+        const oldRevision = product.revision;
+
         product.uniqueCode = uniqueCode;
         product.revision = !uniqueCode.trim() ? false : revision;
 
-        return this.productRepository.save(product);
-      }),
+        return this.productRepository
+          .save(product)
+          .pipe(
+            catchError(() => {
+              this.snackBar.open("Se ha producido un error y el producto no se ha guardado", "Cerrar", {duration: 2000});
+              product.uniqueCode = oldUniqueCode;
+              product.revision = oldRevision;
 
+              return of(product);
+            })
+          );
+      }),
       toArray()
     )
       .subscribe(data => this.findAll$.next(data));

@@ -1,6 +1,5 @@
 package es.pharmashop.rest;
 
-import es.pharmashop.config.annotation.SqliteTransactional;
 import es.pharmashop.persistence.sqlite.entity.Product;
 import es.pharmashop.persistence.sqlite.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ public class ProductController {
   }
 
   @PostMapping
-  @SqliteTransactional
   public void update(@RequestBody Product product) {
     Product one = this.productRepository.findByCnAndEan(product.getCn(), product.getEan());
 
