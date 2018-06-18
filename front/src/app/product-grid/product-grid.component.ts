@@ -35,8 +35,8 @@ export class ProductGridComponent {
 
   updateUniqueCodeFor(product: Product, uniqueCode: string) {
     if (product.uniqueCode !== uniqueCode) {
-      const {id, revision} = product;
-      this.onProductChanged.emit({id, uniqueCode, revision});
+      const {ean, revision} = product;
+      this.onProductChanged.emit({ean, uniqueCode, revision});
     }
 
     this.editing = -1;
@@ -47,8 +47,8 @@ export class ProductGridComponent {
       return;
     }
 
-    const {id, uniqueCode} = product;
-    this.onProductChanged.emit({id, uniqueCode, revision: event.checked});
+    const {ean, uniqueCode} = product;
+    this.onProductChanged.emit({ean, uniqueCode, revision: event.checked});
   }
 
   productFilterChanged(filter) {

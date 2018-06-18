@@ -1,5 +1,4 @@
 export interface IProduct {
-  id: number;
   uniqueCode: string;
   cn: string;
   ean: string;
@@ -8,15 +7,13 @@ export interface IProduct {
 }
 
 export class Product {
-  public id: number;
   public uniqueCode: string;
   public cn: string;
   public ean: string;
   public name: string;
   public revision: boolean;
 
-  constructor({id, uniqueCode, cn, ean, name, revision}: IProduct) {
-    this.id = id;
+  constructor({uniqueCode, cn, ean, name, revision}: IProduct) {
     this.uniqueCode = uniqueCode;
     this.cn = cn;
     this.ean = ean;

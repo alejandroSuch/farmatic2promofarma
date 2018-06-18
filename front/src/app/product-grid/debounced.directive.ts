@@ -1,15 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  PLATFORM_ID
-} from "@angular/core";
+import {Directive, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from "@angular/core";
 
 import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 import {debounceTime, filter} from 'rxjs/operators';
@@ -28,7 +17,7 @@ export class InputDebounceDirective implements OnInit, OnDestroy {
   subscription: Subscription;
   inputSubject: Subject<Event> = new BehaviorSubject<Event>(null);
 
-  constructor(private element: ElementRef, @Inject(PLATFORM_ID) private platformId) {
+  constructor() {
   }
 
   @HostListener('input', ['$event'])

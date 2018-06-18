@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductRepository} from "./domain/impl/ProductRepository";
-import {BehaviorSubject, of, from, Observable} from 'rxjs';
+import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {IProduct, Product} from "./domain/Product";
-import {mergeMap, switchMap, take, toArray, map} from "rxjs/operators";
+import {concatMap, take, toArray} from "rxjs/operators";
+import {switchMap} from "rxjs/internal/operators";
 
 @Component({
   selector: 'fa-root',
@@ -29,22 +30,21 @@ export class AppComponent implements OnInit {
     this.product$ = this.findAll$;
   }
 
-  productChanged({id, uniqueCode, revision}: Partial<IProduct>) {
+  productChanged({ean, uniqueCode, revision}: Partial<IProduct>) {
     this.findAll$.pipe(
       take(1),
-      mergeMap(it => from(it)),
-      switchMap((p: Product) => {
-        if (p.id !== id) {
-          return of(p);
+      switchMap(it => from(it)),
+      concatMap((product: Product) => {
+        if (product.ean !== ean) {
+          return of(product);
         }
 
-        const result = p.clone();
-        result.uniqueCode = uniqueCode;
-        result.revision = !uniqueCode.trim() ? false : revision;
+        product.uniqueCode = uniqueCode;
+        product.revision = !uniqueCode.trim() ? false : revision;
 
-        // TODO: llamada a backend (
-        return of(result);
+        return this.productRepository.save(product);
       }),
+
       toArray()
     )
       .subscribe(data => this.findAll$.next(data));

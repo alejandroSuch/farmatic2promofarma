@@ -4,9 +4,9 @@ import {from, Observable} from "rxjs";
 import {IProduct, Product} from "../Product";
 import {HttpClient, HttpParams} from "@angular/common/http";
 
-import {map, tap, toArray} from 'rxjs/operators'
+import {map, toArray} from 'rxjs/operators'
 import {API_URL} from "../../shared/providers";
-import {mergeMap} from "rxjs/internal/operators";
+import {switchMap} from "rxjs/internal/operators";
 
 const ONE = 1;
 
@@ -19,11 +19,19 @@ export class ProductRepository implements IProductRepository {
     console.info('Base url is', this.baseUrl);
   }
 
+  save(product: Product): Observable<Product> {
+    return this.httpClient
+      .post(this.baseUrl, product)
+      .pipe(
+        map(() => product)
+      )
+  }
+
   findAll(page: number = 0, size: number = 20): Observable<Product[]> {
     return this.httpClient
       .get(this.baseUrl, ProductRepository.findAllOptions(page, size))
       .pipe(
-        mergeMap((it: IProduct[]) => from(it)),
+        switchMap((it: IProduct[]) => from(it)),
         map(it => new Product(it)),
         toArray()
       )

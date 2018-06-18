@@ -1,12 +1,14 @@
 package es.pharmashop.persistence.sqlite.entity;
 
-import es.pharmashop.persistence.sqlite.converter.BooleanToIntegerConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Data
 @Entity
@@ -16,8 +18,8 @@ import javax.persistence.*;
 @Table(name = "product")
 public class Product {
   @Id
-  @Column(name = "id")
-  Long id;
+  @Column(name = "ean")
+  String ean;
 
   @Column(name = "unique_code")
   String uniqueCode;
@@ -25,10 +27,10 @@ public class Product {
   @Column(name = "cn")
   String cn;
 
-  @Column(name = "ean")
-  String ean;
+  @Column(name = "name")
+  String name;
 
   @Column(name = "revision")
-  @Convert(converter = BooleanToIntegerConverter.class)
-  Boolean revision;
+  // @Convert(converter = BooleanToIntegerConverter.class)
+    Boolean revision;
 }

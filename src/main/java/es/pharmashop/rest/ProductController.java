@@ -1,14 +1,12 @@
 package es.pharmashop.rest;
 
+import es.pharmashop.config.annotation.SqliteTransactional;
 import es.pharmashop.persistence.sqlite.entity.Product;
 import es.pharmashop.persistence.sqlite.repository.ProductRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @AllArgsConstructor
 @RequestMapping("products")
@@ -16,7 +14,19 @@ public class ProductController {
   private ProductRepository productRepository;
 
   @GetMapping
-  public Page<Product> findAll(Pageable pageRequest) {
-    return productRepository.findAll(pageRequest);
+  public Iterable<Product> findAll() {
+    return productRepository.findAll();
+  }
+
+  @PostMapping
+  @SqliteTransactional
+  public void update(@RequestBody Product product) {
+    Product one = this.productRepository.findByCnAndEan(product.getCn(), product.getEan());
+
+    product.setName(one.getName());
+    product.setEan(one.getEan());
+    product.setCn(one.getCn());
+
+    this.productRepository.save(product);
   }
 }
