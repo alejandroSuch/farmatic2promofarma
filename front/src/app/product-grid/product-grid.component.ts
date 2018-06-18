@@ -1,6 +1,5 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {IProduct, Product} from "../domain/Product";
-import {Page} from "../domain/Page";
 import {Observable} from "rxjs/index";
 import {MatCheckboxChange} from "@angular/material";
 
@@ -16,9 +15,6 @@ export class ProductGridComponent {
 
   @Output()
   onProductChanged: EventEmitter<Partial<IProduct>> = new EventEmitter<Partial<IProduct>>();
-
-  @Output()
-  onPaginate: EventEmitter<Partial<Page<Product>>> = new EventEmitter<Partial<Page<Product>>>();
 
   editing: number = -1;
 

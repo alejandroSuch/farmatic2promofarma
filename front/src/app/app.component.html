@@ -1,6 +1,5 @@
 <fa-toolbar></fa-toolbar>
 <fa-product-grid
   [products]="product$ | async"
-  (onPaginate)="load($event)"
   (onProductChanged)="productChanged($event)"
 ></fa-product-grid>
