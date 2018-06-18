@@ -2,8 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ProductRepository} from "./domain/impl/ProductRepository";
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {IProduct, Product} from "./domain/Product";
-import {concatMap, take, toArray} from "rxjs/operators";
-import {catchError, switchMap} from "rxjs/internal/operators";
+import {catchError, concatMap, switchMap, take, tap, toArray} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material";
 
 @Component({
@@ -49,6 +48,7 @@ export class AppComponent implements OnInit {
         return this.productRepository
           .save(product)
           .pipe(
+            tap(() => this.snackBar.open("Guardado", "Ok", {duration: 1000})),
             catchError(() => {
               this.snackBar.open("Se ha producido un error y el producto no se ha guardado", "Cerrar", {duration: 2000});
               product.uniqueCode = oldUniqueCode;
