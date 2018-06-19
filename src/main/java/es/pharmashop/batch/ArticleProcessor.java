@@ -33,7 +33,7 @@ public class ArticleProcessor implements ItemProcessor<Article, Article> {
     article.fixStock();
     article.applyFactorToStock(factor);
     article.applyMarginToPrice(margin);
-    article.setUniqueCode(product.getUniqueCode());
+    article.setUniqueCode(product.validAndReviewed() ? product.getUniqueCode() : null);
 
     return article;
   }

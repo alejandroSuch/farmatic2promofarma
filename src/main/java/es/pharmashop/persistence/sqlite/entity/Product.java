@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +32,9 @@ public class Product {
   String name;
 
   @Column(name = "revision")
-  // @Convert(converter = BooleanToIntegerConverter.class)
-    Boolean revision;
+  Boolean revision;
+
+  public boolean validAndReviewed() {
+    return StringUtils.hasText(uniqueCode) && revision;
+  }
 }
