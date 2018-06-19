@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RequestMapping("products")
 public class ProductController {
+  private static final String EMPTY_STRING = "";
   private ProductRepository productRepository;
 
   @GetMapping
@@ -20,6 +21,10 @@ public class ProductController {
   @PostMapping
   public void update(@RequestBody Product product) {
     Product one = this.productRepository.findByCnAndEan(product.getCn(), product.getEan());
+
+    if(EMPTY_STRING.equals(product.getUniqueCode())) {
+      product.setUniqueCode(null);
+    }
 
     product.setName(one.getName());
     product.setEan(one.getEan());

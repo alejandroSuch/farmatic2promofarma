@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build --prod --aot--delete-output-path --output-path=../src/main/resources/static/ --progress"
+    "deploy": "ng build --prod --aot --delete-output-path --output-path=../src/main/resources/static/ --progress"
   },
   "private": true,
   "dependencies": {
