@@ -19,7 +19,7 @@ public class ArticleProcessor implements ItemProcessor<Article, Article> {
   @Override
   public Article process(Article article) throws Exception {
     Product product = productRepository.findByCnAndEan(article.getId(), article.getEan());
-        
+
     if (product == null) {
       product = productRepository.save(Product.builder()
         .cn(article.getId())

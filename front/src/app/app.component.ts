@@ -5,6 +5,12 @@ import {IProduct, Product} from "./domain/Product";
 import {catchError, concatMap, switchMap, take, tap, toArray} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material";
 
+const ONLY_ONE = 1;
+const OK_ACTION = "Ok";
+const CLOSE_ACTION = "Cerrar";
+const SAVED_MESSAGE = "Guardado";
+const ERROR_MESSAGE = "Se ha producido un error y el producto no se ha guardado";
+
 @Component({
   selector: 'fa-root',
   templateUrl: './app.component.html',
@@ -32,7 +38,7 @@ export class AppComponent implements OnInit {
 
   productChanged({ean, uniqueCode, revision}: Partial<IProduct>) {
     this.findAll$.pipe(
-      take(1),
+      take(ONLY_ONE),
       switchMap(it => from(it)),
       concatMap((product: Product) => {
         if (product.ean !== ean) {
@@ -45,17 +51,20 @@ export class AppComponent implements OnInit {
         product.uniqueCode = uniqueCode;
         product.revision = !uniqueCode.trim() ? false : revision;
 
+        const showSavedSnackBar = () => this.snackBar.open(SAVED_MESSAGE, OK_ACTION, {duration: 1000});
+        const showErrorSnackBarAndRevertChanges = () => {
+          this.snackBar.open(ERROR_MESSAGE, CLOSE_ACTION, {duration: 2000});
+          product.uniqueCode = oldUniqueCode;
+          product.revision = oldRevision;
+
+          return of(product);
+        };
+
         return this.productRepository
           .save(product)
           .pipe(
-            tap(() => this.snackBar.open("Guardado", "Ok", {duration: 1000})),
-            catchError(() => {
-              this.snackBar.open("Se ha producido un error y el producto no se ha guardado", "Cerrar", {duration: 2000});
-              product.uniqueCode = oldUniqueCode;
-              product.revision = oldRevision;
-
-              return of(product);
-            })
+            tap(showSavedSnackBar),
+            catchError(showErrorSnackBarAndRevertChanges)
           );
       }),
       toArray()
