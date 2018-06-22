@@ -19,6 +19,7 @@ public class Article {
     BigDecimal price;
     Integer taxes;
     Integer stock;
+    String uniqueCode;
 
     public void applyFactorToStock(Float factor) {
         double newStock = Math.ceil(this.stock * factor);

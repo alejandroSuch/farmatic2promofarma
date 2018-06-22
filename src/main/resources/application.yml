@@ -2,10 +2,11 @@ spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       dialect: org.hibernate.dialect.SQLServer2012Dialect
       ddl-auto: none
+    database: default
   batch:
     initializer:
       enabled: false # disable database initialization
@@ -14,9 +15,22 @@ spring:
   profiles:
     active: development
 
+sqlite:
+  datasource:
+    url: jdbc:sqlite:/Users/alejandro/projects/farmatic2promofarma/sqlite/promofarma.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    hibernate:
+      dialect: com.enigmabridge.hibernate.dialect.SQLiteDialect
+      ddl-auto: none
+
 logging:
   file: logs/farmatic2promofarma.log
 
 farmatic2csv:
   price:
     margin: 0.41
+
+server:
+  port: 8080
+

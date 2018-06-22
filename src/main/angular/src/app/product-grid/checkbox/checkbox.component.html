@@ -1,0 +1,10 @@
+<input type="checkbox"
+       [attr.checked]="product.revision || null"
+       (change)="onChange($event)"
+       (click)="check()">
+({{ product.cn }})
+<!-- <mat-checkbox
+  [attr.checked]="product.revision || null"
+  [attr.disabled]="product.isNotValid()"
+  (change)="check($event)"
+></mat-checkbox> -->

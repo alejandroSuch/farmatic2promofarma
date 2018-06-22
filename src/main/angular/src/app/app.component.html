@@ -1,0 +1,7 @@
+<fa-toolbar
+  (filterChange)="filterChanged($event)"
+></fa-toolbar>
+<fa-product-grid
+  [products]="product$ | async"
+  (onProductChanged)="productChanged($event)"
+></fa-product-grid>
