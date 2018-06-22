@@ -1,7 +1,6 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {IProduct, Product} from "../domain/Product";
-import {Observable} from "rxjs/index";
-import {MatCheckboxChange} from "@angular/material";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Product} from "../domain/Product";
+import {PageEvent} from "@angular/material";
 
 @Component({
   selector: 'fa-product-grid',
@@ -9,16 +8,35 @@ import {MatCheckboxChange} from "@angular/material";
   styleUrls: ['./product-grid.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductGridComponent {
+export class ProductGridComponent implements OnChanges {
   @Input()
-  products: Observable<Product[]>;
+  products: Product[];
+
+  productsToShow: Product[] = [];
+
+  pageIndex: number = 0;
+
+  pageSize: number = 10;
 
   @Output()
-  onProductChanged: EventEmitter<Partial<IProduct>> = new EventEmitter<Partial<IProduct>>();
+  onProductChanged: EventEmitter<Product> = new EventEmitter<Product>();
 
-  editing: number = -1;
+  editing: string = null;
 
-  constructor() {
+  displayedColumns = ['name', 'uniqueCode', 'ean', 'cn', 'revision'];
+
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['products'] && changes['products'].currentValue instanceof Array) {
+      this.products = changes['products'].currentValue;
+
+      this.onPage({
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+        length: changes['products'].currentValue.length,
+        previousPageIndex: 0
+      });
+    }
   }
 
   getRowClass(product: Product) {
@@ -31,20 +49,25 @@ export class ProductGridComponent {
 
   updateUniqueCodeFor(product: Product, uniqueCode: string) {
     if (product.uniqueCode !== uniqueCode) {
-      const {ean, revision} = product;
-      this.onProductChanged.emit({ean, uniqueCode, revision});
+      const copy = product.clone();
+      copy.uniqueCode = uniqueCode;
+      this.onProductChanged.emit(copy);
     }
 
-    this.editing = -1;
+    this.editing = null;
   }
 
-  check(event: MatCheckboxChange, product: Product) {
-    if (product.isNotValid()) {
-      return;
-    }
+  check(product: Product) {
+    const productToEmit = product.clone();
+    productToEmit.revision = !product.revision;
+    this.onProductChanged.emit(productToEmit);
+  }
 
-    const {ean, uniqueCode} = product;
-    this.onProductChanged.emit({ean, uniqueCode, revision: event.checked});
+  onPage(event:PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+
+    this.productsToShow = this.products.slice(this.pageIndex, this.pageIndex + this.pageSize);
   }
 
   productFilterChanged(filter) {
@@ -66,5 +89,4 @@ export class ProductGridComponent {
   revisionFilterChanged(filter) {
     console.log('revisionFilterChanged', filter);
   }
-
 }

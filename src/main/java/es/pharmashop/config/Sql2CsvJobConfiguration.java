@@ -77,7 +77,7 @@ public class Sql2CsvJobConfiguration {
   ) {
     FlatFileItemWriter<Article> itemWriter = new FlatFileItemWriter<>();
 
-    String exportFileHeader = usePrice ? "national_code;ean;title;price;iva;stock;idpromofarma" : "national_code;ean;title;stock;idpromofarma";
+    String exportFileHeader = usePrice ? "EAN;CN;PRODUCTO;IVA;PRECIO;STOCK;ID PROMOFARMA" : "EAN;CN;PRODUCTO;STOCK;ID PROMOFARMA";
     StringHeaderWriter headerWriter = new StringHeaderWriter(exportFileHeader);
     itemWriter.setHeaderCallback(headerWriter);
 
@@ -119,8 +119,8 @@ public class Sql2CsvJobConfiguration {
     BeanWrapperFieldExtractor<Article> extractor = new BeanWrapperFieldExtractor<>();
     extractor.setNames(
       usePrice ?
-        new String[] { "id", "ean", "description", "price", "taxes", "stock", "uniqueCode" } :
-        new String[] { "id", "ean", "description", "stock", "uniqueCode" }
+        new String[] { "ean", "id", "description", "taxes", "price", "stock", "uniqueCode" } :
+        new String[] { "ean", "id", "description", "stock", "uniqueCode" }
     );
     return extractor;
   }

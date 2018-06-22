@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductRepository} from "./domain/impl/ProductRepository";
-import {BehaviorSubject, from, Observable, of} from 'rxjs';
-import {IProduct, Product} from "./domain/Product";
-import {catchError, concatMap, switchMap, take, tap, toArray} from "rxjs/operators";
+import {BehaviorSubject, from, Observable, throwError} from 'rxjs';
+import {Product} from "./domain/Product";
+import {catchError, filter, map, switchMap, take, tap, toArray} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material";
 
 const ONLY_ONE = 1;
@@ -21,54 +21,62 @@ export class AppComponent implements OnInit {
   product$: Observable<Product[]>;
 
   constructor(private productRepository: ProductRepository, private snackBar: MatSnackBar) {
-
   }
 
   ngOnInit(): void {
     this.productRepository.findAll()
-      .pipe(take(1))
-      .subscribe(data => this.findAll$.next(data));
+      .pipe(take(ONLY_ONE))
+      .subscribe(value => this.findAll$.next(value));
 
-    this.load();
+    const withFilter = {text: null, code: null, unreviewed: false, withoutCode: false};
+    this.load(withFilter);
   }
 
-  load() {
-    this.product$ = this.findAll$;
+  load(withFilter: { text: string, code: string, unreviewed: boolean, withoutCode: boolean }) {
+    const unreviewed = (product: Product) => (withFilter.unreviewed ? !product.revision && !!product.uniqueCode : true);
+    const withoutCode = (product: Product) => (withFilter.withoutCode ? !product.uniqueCode : true);
+    const byText = (product: Product) => (withFilter.text !== null && withFilter.text.trim().length > 0 ? product.name.toUpperCase().includes(withFilter.text.toUpperCase()) : true);
+    const byCode = (product: Product) => (withFilter.code !== null ? [product.ean, product.cn, product.uniqueCode].some(code => `${code}`.includes(withFilter.code)) : true);
+
+    const applyFilter = it => from(it).pipe(
+      filter(unreviewed),
+      filter(withoutCode),
+      filter(byCode),
+      filter(byText),
+      toArray(),
+      tap(() => {
+        console.log('filter applied');
+      })
+    );
+
+    this.product$ = this.findAll$.pipe(switchMap(applyFilter));
   }
 
-  productChanged({ean, uniqueCode, revision}: Partial<IProduct>) {
-    this.findAll$.pipe(
-      take(ONLY_ONE),
-      switchMap(it => from(it)),
-      concatMap((product: Product) => {
-        if (product.ean !== ean) {
-          return of(product);
-        }
+  filterChanged(withFilter) {
+    this.load(withFilter);
+  }
 
-        const oldUniqueCode = product.uniqueCode;
-        const oldRevision = product.revision;
+  productChanged(product: Product) {
+    const showSavedSnackBar = () => this.snackBar.open(SAVED_MESSAGE, OK_ACTION, {duration: 1000});
+    const showErrorSnackBarAndRevertChanges = (err) => {
+      this.snackBar.open(err || ERROR_MESSAGE, CLOSE_ACTION, {duration: 2000});
+      return throwError(product);
+    };
 
-        product.uniqueCode = uniqueCode;
-        product.revision = !uniqueCode.trim() ? false : revision;
-
-        const showSavedSnackBar = () => this.snackBar.open(SAVED_MESSAGE, OK_ACTION, {duration: 1000});
-        const showErrorSnackBarAndRevertChanges = () => {
-          this.snackBar.open(ERROR_MESSAGE, CLOSE_ACTION, {duration: 2000});
-          product.uniqueCode = oldUniqueCode;
-          product.revision = oldRevision;
-
-          return of(product);
-        };
-
-        return this.productRepository
-          .save(product)
-          .pipe(
-            tap(showSavedSnackBar),
-            catchError(showErrorSnackBarAndRevertChanges)
-          );
-      }),
-      toArray()
-    )
-      .subscribe(data => this.findAll$.next(data));
+    return this.productRepository
+      .save(product)
+      .pipe(
+        tap(showSavedSnackBar),
+        switchMap((saved: Product) => this.findAll$.pipe(
+          take(ONLY_ONE),
+          switchMap(all => from(all)),
+          map(it => it.ean === product.ean ? saved : it),
+          toArray()
+        )),
+        catchError(showErrorSnackBarAndRevertChanges)
+      )
+      .subscribe(value => {
+        this.findAll$.next(value);
+      });
   }
 }

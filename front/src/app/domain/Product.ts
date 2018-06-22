@@ -13,6 +13,16 @@ export class Product {
   public name: string;
   public revision: boolean;
 
+  static empty(): Product {
+    return new Product({
+      uniqueCode: null,
+      cn: null,
+      ean: null,
+      name: null,
+      revision: false
+    });
+  }
+
   constructor({uniqueCode, cn, ean, name, revision}: IProduct) {
     this.uniqueCode = uniqueCode;
     this.cn = cn;

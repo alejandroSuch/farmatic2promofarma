@@ -1,6 +1,6 @@
 import {ProductRepository as IProductRepository} from "../ProductRepository";
 import {Inject, Injectable} from "@angular/core";
-import {from, Observable} from "rxjs";
+import {from, Observable, throwError} from "rxjs";
 import {IProduct, Product} from "../Product";
 import {HttpClient, HttpParams} from "@angular/common/http";
 
@@ -8,7 +8,7 @@ import {map, toArray} from 'rxjs/operators'
 import {API_URL} from "../../shared/providers";
 import {switchMap} from "rxjs/internal/operators";
 
-const ONE = 1;
+const INVALID_FORMAT_MESSAGE = 'Formato incorrecto';
 
 @Injectable()
 export class ProductRepository implements IProductRepository {
@@ -20,6 +20,10 @@ export class ProductRepository implements IProductRepository {
   }
 
   save(product: Product): Observable<Product> {
+    if (`${product.uniqueCode}`.trim().length > 0 && !/\d+/.test(product.uniqueCode)) {
+      return throwError(INVALID_FORMAT_MESSAGE);
+    }
+
     return this.httpClient
       .post(this.baseUrl, product)
       .pipe(

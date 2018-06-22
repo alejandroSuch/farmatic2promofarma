@@ -7,27 +7,27 @@ import {ToolbarComponent} from './toolbar/toolbar.component';
 import {MaterialModule} from "./shared/material.module";
 import {HttpClientModule} from "@angular/common/http";
 import {ProductGridComponent} from './product-grid/product-grid.component';
-import {FormsModule} from "@angular/forms";
 import {ProductRepository} from "./domain/impl/ProductRepository";
 import {environment} from "../environments/environment";
 import {API_URL} from "./shared/providers";
-import {InputDebounceDirective} from "./product-grid/debounced.directive";
+import {DebouncedInputDirective} from "./shared/debouncedInput.directive";
 import {AutofocusDirective} from "./product-grid/autofocus.directive";
+import {CheckboxComponent} from "./product-grid/checkbox/checkbox.component"
 
 @NgModule({
   declarations: [
     AppComponent,
     ToolbarComponent,
     ProductGridComponent,
-    InputDebounceDirective,
-    AutofocusDirective
+    DebouncedInputDirective,
+    AutofocusDirective,
+    CheckboxComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    HttpClientModule,
-    FormsModule
+    HttpClientModule
   ],
   providers: [
     {

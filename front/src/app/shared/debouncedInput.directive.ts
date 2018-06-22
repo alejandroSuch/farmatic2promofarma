@@ -4,12 +4,13 @@ import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 import {debounceTime, filter} from 'rxjs/operators';
 
 
+const DEFAULT_DELAY = 300;
 @Directive({
   selector: '[debouncedInput]'
 })
-export class InputDebounceDirective implements OnInit, OnDestroy {
+export class DebouncedInputDirective implements OnInit, OnDestroy {
   @Input()
-  delay: number = 300;
+  delay: number = DEFAULT_DELAY;
 
   @Output()
   debouncedInput: EventEmitter<Event> = new EventEmitter<Event>();

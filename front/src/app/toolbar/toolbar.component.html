@@ -1,3 +1,15 @@
 <mat-toolbar color="primary">
-  farmatic2promofarma
+  <span>farmatic2promofarma</span>
+  <span class="separator"></span>
+  <mat-slide-toggle
+    color="accent"
+    (change)="toggleWithoutCode($event.checked)"
+  >Sin código promofarma</mat-slide-toggle>
+  <mat-slide-toggle
+    color="accent"
+    (change)="toggleUnreviewed($event.checked)"
+  >Pendiente revisar</mat-slide-toggle>
+  <mat-form-field>
+    <input type="text" matInput placeholder="Buscar" (debouncedInput)="searchTextChanged($event.target.value)">
+  </mat-form-field>
 </mat-toolbar>
