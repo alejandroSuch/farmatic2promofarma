@@ -37,4 +37,14 @@ public class Product {
   public boolean validAndReviewed() {
     return StringUtils.hasText(uniqueCode) && revision;
   }
+
+  public Product clone() {
+    return Product.builder()
+      .ean(ean)
+      .uniqueCode(uniqueCode)
+      .cn(cn)
+      .name(name)
+      .revision(revision)
+      .build();
+  }
 }

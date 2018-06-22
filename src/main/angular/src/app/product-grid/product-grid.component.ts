@@ -67,7 +67,10 @@ export class ProductGridComponent implements OnChanges {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
 
-    this.productsToShow = this.products.slice(this.pageIndex, this.pageIndex + this.pageSize);
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    
+    this.productsToShow = this.products.slice(start, end);
   }
 
   productFilterChanged(filter) {

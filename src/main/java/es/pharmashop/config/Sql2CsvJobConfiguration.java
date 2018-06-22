@@ -4,6 +4,7 @@ import es.pharmashop.batch.ArticleProcessor;
 import es.pharmashop.batch.StringHeaderWriter;
 import es.pharmashop.domain.Article;
 import es.pharmashop.persistence.ArticleMapper;
+import es.pharmashop.persistence.sqlite.repository.CatalogRepository;
 import es.pharmashop.persistence.sqlite.repository.ProductRepository;
 import lombok.extern.java.Log;
 import org.springframework.batch.core.Job;
@@ -61,12 +62,14 @@ public class Sql2CsvJobConfiguration {
   public ItemProcessor articleItemProcessor(
     @Value("${farmatic2csv.stock.factor:1}") Float factor,
     @Value("${farmatic2csv.price.margin}") Float margin,
-    ProductRepository productRepository
+    ProductRepository productRepository,
+    CatalogRepository catalogRepository
   ) {
     return ArticleProcessor.builder()
       .factor(factor)
       .margin(margin)
       .productRepository(productRepository)
+      .catalogRepository(catalogRepository)
       .build();
   }
 
