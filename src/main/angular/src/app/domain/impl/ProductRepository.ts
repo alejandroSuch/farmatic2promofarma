@@ -24,6 +24,10 @@ export class ProductRepository implements IProductRepository {
       return throwError(INVALID_FORMAT_MESSAGE);
     }
 
+    if(`${product.uniqueCode}`.trim().length > 0) {
+      product.revision = false;
+    }
+
     return this.httpClient
       .post(this.baseUrl, product)
       .pipe(
