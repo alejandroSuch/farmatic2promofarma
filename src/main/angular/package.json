@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build --prod --aot --delete-output-path --output-path=../src/main/resources/static/ --progress"
+    "deploy": "ng build --prod --aot --delete-output-path --output-path=../resources/static/ --progress"
   },
   "private": true,
   "dependencies": {
@@ -23,13 +23,8 @@
     "@angular/platform-browser": "^6.0.6",
     "@angular/platform-browser-dynamic": "^6.0.6",
     "@angular/router": "^6.0.6",
-    "@swimlane/ngx-datatable": "^13.0.1",
-    "ag-grid": "^18.0.1",
-    "ag-grid-angular": "^18.0.1",
     "core-js": "^2.5.4",
     "install": "^0.11.0",
-    "primeicons": "^1.0.0-beta.7",
-    "primeng": "^6.0.0-rc.1",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
   },
