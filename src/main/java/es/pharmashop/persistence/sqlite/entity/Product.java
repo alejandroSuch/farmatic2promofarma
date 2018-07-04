@@ -32,10 +32,10 @@ public class Product {
   String name;
 
   @Column(name = "revision")
-  Boolean revision;
+  Integer revision;
 
   public boolean validAndReviewed() {
-    return StringUtils.hasText(uniqueCode) && revision;
+    return StringUtils.hasText(uniqueCode) && revision == 1;
   }
 
   public Product clone() {

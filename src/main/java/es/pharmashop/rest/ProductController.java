@@ -24,7 +24,7 @@ public class ProductController {
 
     if(EMPTY_STRING.equals(product.getUniqueCode())) {
       product.setUniqueCode(null);
-      product.setRevision(false);
+      product.setRevision(0);
     }
 
     product.setName(one.getName());

@@ -20,16 +20,23 @@ public class ArticleProcessor implements ItemProcessor<Article, Article> {
   private CatalogRepository catalogRepository;
 
   @Override
-  public Article process(Article article) throws Exception {
+  public Article process(Article article) {
     Product product = processProduct(article);
-    String uniqueCode = product == null ? null : product.getUniqueCode();
 
     article.fixStock();
     article.applyFactorToStock(factor);
     article.applyMarginToPrice(margin);
-    article.setUniqueCode(uniqueCode);
+    article.setUniqueCode(getUniqueCode(product));
 
     return article;
+  }
+
+  private String getUniqueCode(Product product) {
+    if (product != null && product.getRevision() == 1) {
+      return product.getUniqueCode();
+    }
+
+    return null;
   }
 
   private Product processProduct(Article article) {
@@ -43,7 +50,7 @@ public class ArticleProcessor implements ItemProcessor<Article, Article> {
           .cn(article.getId())
           .ean(article.getEan())
           .name(article.getDescription())
-          .revision(false)
+          .revision(0)
           .uniqueCode(byEan.getIdPromofarma())
           .build());
       }

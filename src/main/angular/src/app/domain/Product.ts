@@ -3,7 +3,7 @@ export interface IProduct {
   cn: string;
   ean: string;
   name: string;
-  revision: boolean;
+  revision: number;
 }
 
 export class Product {
@@ -19,7 +19,7 @@ export class Product {
       cn: null,
       ean: null,
       name: null,
-      revision: false
+      revision: 0
     });
   }
 
@@ -28,7 +28,7 @@ export class Product {
     this.cn = cn;
     this.ean = ean;
     this.name = name;
-    this.revision = revision;
+    this.revision = revision === 1;
   }
 
   isValid(): boolean {
@@ -48,6 +48,8 @@ export class Product {
   }
 
   clone() {
-    return new Product(this);
+    const {uniqueCode, cn, ean, name} = this;
+    const revision = this.revision ? 1 : 0;
+    return new Product({uniqueCode, cn, ean, name, revision});
   }
 }
