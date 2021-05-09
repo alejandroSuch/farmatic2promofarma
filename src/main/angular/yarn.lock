@@ -214,10 +214,6 @@
     semver "^5.3.0"
     semver-intersect "^1.1.2"
 
-"@swimlane/ngx-datatable@^13.0.1":
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/@swimlane/ngx-datatable/-/ngx-datatable-13.0.1.tgz#6e949e19130b2054e2715d30d158751c4fbaa502"
-
 "@types/jasmine@*", "@types/jasmine@~2.8.6":
   version "2.8.8"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.8.8.tgz#bf53a7d193ea8b03867a38bfdb4fbb0e0bf066c9"
@@ -403,14 +399,6 @@ adm-zip@^0.4.7:
 after@0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/after/-/after-0.8.2.tgz#fedb394f9f0e02aa9768e702bda23b505fae7e1f"
-
-ag-grid-angular@^18.0.1:
-  version "18.0.1"
-  resolved "https://registry.yarnpkg.com/ag-grid-angular/-/ag-grid-angular-18.0.1.tgz#00959e3bea8fe9cce138f9dc3cd85d5c2eddd94d"
-
-ag-grid@^18.0.1:
-  version "18.0.1"
-  resolved "https://registry.yarnpkg.com/ag-grid/-/ag-grid-18.0.1.tgz#e72ee2f7cd79063466fc99fa22f7f4e9880adda2"
 
 agent-base@^4.1.0:
   version "4.2.0"
@@ -1338,7 +1326,7 @@ compressible@~2.0.13:
 
 compression@^1.5.2:
   version "1.7.2"
-  resolved "http://registry.npmjs.org/compression/-/compression-1.7.2.tgz#aaffbcd6aaf854b44ebb280353d5ad1651f59a69"
+  resolved "https://registry.npmjs.org/compression/-/compression-1.7.2.tgz#aaffbcd6aaf854b44ebb280353d5ad1651f59a69"
   dependencies:
     accepts "~1.3.4"
     bytes "3.0.0"
@@ -2765,8 +2753,8 @@ hoek@2.x.x:
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
 
 hosted-git-info@^2.1.4, hosted-git-info@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.6.0.tgz#23235b29ab230c576aab0d4f13fc046b0b038222"
+  version "2.8.9"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
 
 hpack.js@^2.1.6:
   version "2.1.6"
@@ -4651,14 +4639,6 @@ pretty-error@^2.0.2:
   dependencies:
     renderkid "^2.0.1"
     utila "~0.4"
-
-primeicons@^1.0.0-beta.7:
-  version "1.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-1.0.0-beta.9.tgz#e2fe9d586809e0fe0b9ee6109784e5340a1c3f05"
-
-primeng@^6.0.0-rc.1:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-6.0.0.tgz#73a3523098f2b95da0f18d3705d86cf66f6f0d0e"
 
 process-nextick-args@~1.0.6:
   version "1.0.7"
