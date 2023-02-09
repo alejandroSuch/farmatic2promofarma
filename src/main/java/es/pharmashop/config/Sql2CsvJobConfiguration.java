@@ -35,22 +35,26 @@ public class Sql2CsvJobConfiguration {
     private static final String TMP_FILE_SUFFIX = ".csv";
 
     private final static String FIND_ARTICLES_QUERY =
-            "SELECT a.IdArticu, s.Sinonimo, a.Descripcion, a.Pvp, a.Puc, ti.Piva, a.StockActual, a.StockMinimo, a.StockMaximo, a.LoteOptimo, a.FechaUltimaEntrada, a.FechaUltimaSalida, a.FechaCaducidad\n" +
+            "SELECT a.IdArticu, s.Sinonimo, a.Descripcion, a.Pvp, a.Puc, ti.Piva, aa.StockActual, aa.StockMinimo, aa.StockMaximo, aa.LoteOptimo, a.FechaUltimaEntrada, a.FechaUltimaSalida, a.FechaCaducidad\n" +
             "FROM Articu a\n" +
             "  LEFT JOIN ItemListaArticu i on a.IdArticu = i.XItem_IdArticu\n" +
             "  LEFT JOIN ListaArticu l on i.XItem_IdLista = l.IdLista\n" +
             "  LEFT JOIN Sinonimo s ON s.IdArticu = a.IdArticu \n" +
             "  LEFT JOIN TablaIva ti ON ti.IdTipoArt = a.XGrup_IdGrupoIva AND ti.IdTipoPro = '05'\n" +
+            "  INNER JOIN AlmArticu aa ON aa.IdArticu = a.IdArticu AND aa.IdAlmacen = :warehouseId:\n" +
             "WHERE l.Descripcion = 'PROMOFARMA'\n" +
             "  AND s.IdAplicacion = '00000' \n" +
             "  AND LEN(s.Sinonimo) = 13";
 
     @Bean
-    ItemReader<Article> databaseItemReader(DataSource dataSource) {
+    ItemReader<Article> databaseItemReader(
+        DataSource dataSource,
+        @Value("${farmatic.warehouse}") int warehouseId
+    ) {
         JdbcCursorItemReader<Article> itemReader = new JdbcCursorItemReader<>();
 
         itemReader.setDataSource(dataSource);
-        itemReader.setSql(FIND_ARTICLES_QUERY);
+        itemReader.setSql(FIND_ARTICLES_QUERY.replaceAll(":warehouseId:", Integer.toString(warehouseId)));
         itemReader.setRowMapper(new ArticleMapper());
 
         return itemReader;
